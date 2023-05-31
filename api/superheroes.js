@@ -5,9 +5,9 @@ const uploadCloud = require('../middleware/image');
 
 router.post("/", ctrlSuperheroes.create);
 
-router.put("/:superheroId", ctrlSuperheroes.edit);
+router.put("/:superheroId", ctrlSuperheroes.access, ctrlSuperheroes.edit);
 
-router.delete("/:superheroId", ctrlSuperheroes.remove);
+router.delete("/:superheroId", ctrlSuperheroes.access, ctrlSuperheroes.remove);
 
 router.get("/", ctrlSuperheroes.showAll);
 
@@ -15,8 +15,10 @@ router.get("/:superheroId", ctrlSuperheroes.showOne);
 
 router.patch(
   "/image/:superheroId",
-  uploadCloud.single("image"),
+  uploadCloud.single("flatImage"),
   ctrlSuperheroes.addImage
 );
+
+// router.post("/access", ctrlSuperheroes.access)
 
 module.exports = router;

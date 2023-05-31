@@ -14,7 +14,7 @@ const create = async (req, res, next) => {
 
 const edit = async (req, res, next) => {
   const id = req.params;
-  const info = req.body;
+  const info = req.body.hero;
   try {
     const superhero = await service.showSuperheroById(id.superheroId);
     if (!superhero) {
@@ -23,6 +23,7 @@ const edit = async (req, res, next) => {
     if (!Object.keys(info).length) {
       res.status(400).json({ message: "Missing all field." });
     }
+    console.log(info);
     const result = await service.editSuperhero(id.superheroId, info);
     res.status(200).json(result);
   } catch (error) {
@@ -33,18 +34,11 @@ const edit = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const id = req.params;
-    const adminKeyExternal = req.body;
-    if (adminKeyInternal !== adminKeyExternal) {
-      res.status(404).json({ message: "Joke denided access" });
-    }
-    const superhero = await service.getSuperheroById(
-      id.superheroId,
-      adminKeyExternal
-    );
+    const superhero = await service.showSuperheroById(id.superheroId);
     if (!superhero) {
       res.status(404).json({ message: "Joke not found" });
     }
-    await service.remove(id.superheroId);
+    await service.removeSuperhero(id.superheroId);
     res.status(200).json({ message: "Joke hero deleted" });
   } catch (error) {
     next(error);
@@ -81,15 +75,28 @@ const showOne = async (req, res, next) => {
 
 async function addImage(req, res) {
   const id = req.params;
-  const image = req.file.path;
-
+  
   try {
-    await service.addHeroImage(id.superheroId, image);
-    res.json({
-      message: "New image added!",
-    });
+    const image = req.file.path;
+    const result = await service.addHeroImage(id.superheroId, image);
+    console.log(result);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(420).message({ no });
+    res.status(420).json({ message: "Image is not defined!" });
+  }
+}
+
+async function access(req, res, next) {
+  const access = process.env.ADMIN_KEY;
+  try {
+    const {accessKey} = req.body;
+    if (access === accessKey) {
+      next()
+    } else {
+      throw new Error
+    }
+  } catch (error) {
+    res.status(403).json({ message: "Not you boy!" });
   }
 }
 
@@ -100,4 +107,5 @@ module.exports = {
   showAll,
   showOne,
   addImage,
+  access,
 };
