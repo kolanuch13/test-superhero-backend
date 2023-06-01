@@ -26,8 +26,9 @@ const removeSuperhero = (id) => {
   return Superhero.findByIdAndRemove({ _id: id });
 };
 
+
 const showSuperheroesList = async (page, limit) => {
-  return Superhero.find()
+  return Superhero.find({}, { nickname: 1, images: {$slice: 1} })
     .skip(page * limit)
     .limit(limit)
     .exec();
