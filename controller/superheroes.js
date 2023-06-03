@@ -23,7 +23,6 @@ const edit = async (req, res, next) => {
     if (!Object.keys(info).length) {
       res.status(400).json({ message: "Missing all field." });
     }
-    console.log(info);
     const result = await service.editSuperhero(id.superheroId, info);
     res.status(200).json(result);
   } catch (error) {

@@ -18,8 +18,8 @@ const createSuperhero = ({
   });
 };
 
-const editSuperhero = (id, info) => {
-  return Superhero.findByIdAndUpdate({ _id: id }, info);
+const editSuperhero = async (id, info) => {
+  return await Superhero.findByIdAndUpdate({ _id: id }, info, { new: true });
 };
 
 const removeSuperhero = (id) => {
