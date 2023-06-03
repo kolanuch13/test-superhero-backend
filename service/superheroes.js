@@ -43,7 +43,8 @@ const addHeroImage = (id, image) => {
     { _id: id },
     {
       $push: { images: image },
-    }
+    },
+    { new: true }
   );
 };
 
